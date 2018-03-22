@@ -64,7 +64,7 @@
     [customView addSubview:textFied];
     
     self.popupController = [[CNPPopupController alloc] initWithContents:@[titleLabel, lineOneLabel, imageView, lineTwoLabel, customView, button]];
-    self.popupController.theme = [CNPPopupTheme defaultTheme];
+    self.popupController.theme = [CNPPopupTheme defaultThemeWithBgColor:[UIColor whiteColor]];
     self.popupController.theme.popupStyle = popupStyle;
     self.popupController.delegate = self;
     [self.popupController presentPopupControllerAnimated:YES];

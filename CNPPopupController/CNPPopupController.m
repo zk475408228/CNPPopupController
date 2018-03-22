@@ -59,8 +59,11 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
         
         [self.maskView addSubview:self.popupView];
         
-        self.theme = [CNPPopupTheme defaultTheme];
-
+//        self.theme = [CNPPopupTheme defaultTheme];
+        
+        //改
+        self.theme = [CNPPopupTheme defaultThemeWithBgColor:[UIColor whiteColor]];
+        
         [self addPopupContents];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -91,7 +94,50 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
-
+//改
+- (void)reloadAllViewNow
+{
+    CGSize size = CGSizeMake([self popupWidth], self.maskView.bounds.size.height);
+    UIEdgeInsets inset = self.theme.popupContentInsets;
+    size.width -= (inset.left + inset.right);
+    size.height -= (inset.top + inset.bottom);
+    
+    CGSize result = CGSizeMake(0, inset.top);
+    for (UIView *view in self.popupView.subviews)
+    {
+        view.autoresizingMask = UIViewAutoresizingNone;
+        if (!view.hidden)
+        {
+            CGSize _size = view.frame.size;
+            if (CGSizeEqualToSize(_size, CGSizeZero))
+            {
+                _size = [view sizeThatFits:size];
+                _size.width = size.width;
+                view.frame = CGRectMake(inset.left, result.height, _size.width, _size.height);
+            }
+            else {
+                view.frame = CGRectMake(0, result.height, _size.width, _size.height);
+            }
+            result.height += _size.height + self.theme.contentVerticalPadding;
+            result.width = MAX(result.width, _size.width);
+        }
+    }
+    
+    result.height -= self.theme.contentVerticalPadding;
+    result.width += inset.left + inset.right;
+    result.height = MIN(INFINITY, MAX(0.0f, result.height + inset.bottom));
+    for (UIView *view in self.popupView.subviews) {
+        view.frame = CGRectMake((result.width - view.frame.size.width) * 0.5, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
+    }
+    
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        self.popupView.bounds = CGRectMake(0, 0, result.width, result.height);
+        self.popupView.center = [self endingPoint];
+    }];
+    
+    
+}
 - (void)orientationWillChange {
     
     [UIView animateWithDuration:self.theme.animationDuration animations:^{
@@ -146,6 +192,10 @@ CGFloat CNP_UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orie
         self.theme.presentationStyle = CNPPopupPresentationStyleFadeIn;
     }
     if (self.theme.popupStyle == CNPPopupStyleActionSheet) {
+        self.theme.presentationStyle = CNPPopupPresentationStyleSlideInFromBottom;
+    }
+    //改
+    if (self.theme.popupStyle == CNPPopupStyleBottomCustom){
         self.theme.presentationStyle = CNPPopupPresentationStyleSlideInFromBottom;
     }
     self.blurEffectView.alpha = self.theme.blurEffectAlpha;
@@ -347,6 +397,10 @@ CGFloat CNP_UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orie
     if (self.theme.popupStyle == CNPPopupStyleActionSheet) {
         center = CGPointMake(self.maskView.center.x, self.maskView.bounds.size.height-(self.popupView.bounds.size.height * 0.5));
     }
+    else if (self.theme.popupStyle == CNPPopupStyleBottomCustom)
+    {
+        center = CGPointMake(self.maskView.center.x, self.maskView.bounds.size.height-(self.popupView.bounds.size.height * 0.5)-self.theme.bottomPopDistance);
+    }
     else {
         center = self.maskView.center;
     }
@@ -436,11 +490,11 @@ CGFloat CNP_UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orie
 
 @implementation CNPPopupTheme
 
-+ (CNPPopupTheme *)defaultTheme {
++ (CNPPopupTheme *)defaultThemeWithBgColor:(UIColor *)bgColor {
     CNPPopupTheme *defaultTheme = [[CNPPopupTheme alloc] init];
     defaultTheme.backgroundColor = [UIColor whiteColor];
     defaultTheme.cornerRadius = 4.0f;
-    defaultTheme.popupContentInsets = UIEdgeInsetsMake(16.0f, 16.0f, 16.0f, 16.0f);
+    defaultTheme.popupContentInsets = UIEdgeInsetsMake(10.0f, 10.0f, 10.0f, 10.0f);
     defaultTheme.popupStyle = CNPPopupStyleCentered;
     defaultTheme.presentationStyle = CNPPopupPresentationStyleSlideInFromBottom;
     defaultTheme.dismissesOppositeDirection = NO;

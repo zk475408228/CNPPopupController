@@ -21,6 +21,7 @@
 
 - (void)presentPopupControllerAnimated:(BOOL)flag;
 - (void)dismissPopupControllerAnimated:(BOOL)flag;
+- (void)reloadAllViewNow;//改
 
 @end
 
@@ -46,7 +47,8 @@ typedef void(^SelectionHandler) (CNPPopupButton *_Nonnull button);
 typedef NS_ENUM(NSUInteger, CNPPopupStyle) {
     CNPPopupStyleActionSheet = 0, // Displays the popup similar to an action sheet from the bottom.
     CNPPopupStyleCentered, // Displays the popup in the center of the screen.
-    CNPPopupStyleFullscreen // Displays the popup similar to a fullscreen viewcontroller.
+    CNPPopupStyleFullscreen, // Displays the popup similar to a fullscreen viewcontroller.
+    CNPPopupStyleBottomCustom //改从底部弹出自定义，弹出多高。默认0
 };
 
 // CNPPopupPresentationStyle: Controls how the popup is presented
@@ -83,8 +85,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGFloat maxPopupWidth; // Maxiumum width that the popup should be (Default 300)
 @property (nonatomic, assign) CGFloat animationDuration; // Duration of presentation animations (Default 0.3s)
 
+@property (nonatomic, assign) CGFloat bottomPopDistance; //改从底部弹出的距离,默人0
+
 // Factory method to help build a default theme
-+ (CNPPopupTheme *)defaultTheme;
+//+ (CNPPopupTheme *)defaultTheme;
+//改
++ (CNPPopupTheme *)defaultThemeWithBgColor:(UIColor *)bgColor;
 
 @end
 NS_ASSUME_NONNULL_END
