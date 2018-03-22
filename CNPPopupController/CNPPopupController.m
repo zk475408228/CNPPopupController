@@ -59,10 +59,7 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
         
         [self.maskView addSubview:self.popupView];
         
-//        self.theme = [CNPPopupTheme defaultTheme];
-        
-        //改
-        self.theme = [CNPPopupTheme defaultThemeWithBgColor:[UIColor whiteColor]];
+        self.theme = [CNPPopupTheme defaultTheme];
         
         [self addPopupContents];
         
@@ -397,6 +394,7 @@ CGFloat CNP_UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orie
     if (self.theme.popupStyle == CNPPopupStyleActionSheet) {
         center = CGPointMake(self.maskView.center.x, self.maskView.bounds.size.height-(self.popupView.bounds.size.height * 0.5));
     }
+    //改
     else if (self.theme.popupStyle == CNPPopupStyleBottomCustom)
     {
         center = CGPointMake(self.maskView.center.x, self.maskView.bounds.size.height-(self.popupView.bounds.size.height * 0.5)-self.theme.bottomPopDistance);
@@ -417,6 +415,10 @@ CGFloat CNP_UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orie
             dismissed = self.theme.dismissesOppositeDirection?CGPointMake(self.maskView.center.x, -self.popupView.bounds.size.height):CGPointMake(self.maskView.center.x, self.maskView.bounds.size.height + self.popupView.bounds.size.height);
             if (self.theme.popupStyle == CNPPopupStyleActionSheet) {
                 dismissed = CGPointMake(self.maskView.center.x, self.maskView.bounds.size.height + self.popupView.bounds.size.height);
+            }
+            else if (self.theme.popupStyle == CNPPopupStyleBottomCustom)
+            {
+                dismissed = CGPointMake(self.maskView.center.x, self.maskView.bounds.size.height + self.popupView.bounds.size.height + self.theme.bottomPopDistance);
             }
             break;
         case CNPPopupPresentationStyleSlideInFromLeft:
@@ -490,7 +492,7 @@ CGFloat CNP_UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orie
 
 @implementation CNPPopupTheme
 
-+ (CNPPopupTheme *)defaultThemeWithBgColor:(UIColor *)bgColor {
++ (CNPPopupTheme *)defaultTheme {
     CNPPopupTheme *defaultTheme = [[CNPPopupTheme alloc] init];
     defaultTheme.backgroundColor = [UIColor whiteColor];
     defaultTheme.cornerRadius = 4.0f;

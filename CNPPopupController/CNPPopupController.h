@@ -90,7 +90,7 @@ NS_ASSUME_NONNULL_BEGIN
 // Factory method to help build a default theme
 //+ (CNPPopupTheme *)defaultTheme;
 //改
-+ (CNPPopupTheme *)defaultThemeWithBgColor:(UIColor *)bgColor;
++ (CNPPopupTheme *)defaultTheme;
 
 @end
 NS_ASSUME_NONNULL_END
