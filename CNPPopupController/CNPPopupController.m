@@ -59,6 +59,7 @@ static inline UIViewAnimationOptions UIViewAnimationCurveToAnimationOptions(UIVi
         
         [self.maskView addSubview:self.popupView];
         
+        
         self.theme = [CNPPopupTheme defaultTheme];
         
         [self addPopupContents];
